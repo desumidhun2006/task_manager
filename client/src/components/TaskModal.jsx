@@ -58,6 +58,7 @@ export default function TaskModal({ task, date, time, onSave, onDelete, onClose 
             <label>Reminder</label>
             <select className="input" value={reminder} onChange={e => setReminder(e.target.value)}>
               <option value="none">None</option>
+              <option value="0m">At event time</option>
               <option value="15m">15 min before</option>
               <option value="30m">30 min before</option>
               <option value="1h">1 hour before</option>

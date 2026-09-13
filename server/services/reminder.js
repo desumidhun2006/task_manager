@@ -4,6 +4,7 @@ const { sendSMS } = require('./sms')
 const { sendEmail } = require('./email')
 
 const reminderOffsets = {
+  '0m': 0,
   '15m': 15 * 60 * 1000,
   '30m': 30 * 60 * 1000,
   '1h': 60 * 60 * 1000,
@@ -23,7 +24,7 @@ async function checkReminders() {
     const offset = reminderOffsets[task.reminder]
     const reminderTime = new Date(task.start_time.getTime() - offset)
 
-    if (now >= reminderTime && now < task.start_time) {
+    if (now >= reminderTime && now < new Date(reminderTime.getTime() + 60000)) {
       const message = `Reminder: ${task.title} at ${new Date(task.start_time).toLocaleString()}`
 
       if (task.reminder_sms) {
