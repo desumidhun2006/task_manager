@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node --watch index.js",
     "start": "node index.js",
-    "postinstall": "npx knex migrate:latest"
+    "migrate": "npx knex migrate:latest"
   },
   "dependencies": {
     "express": "^4.19.2",
