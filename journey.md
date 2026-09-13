@@ -15,4 +15,5 @@
 - **2026-09-13** — Task 6: Added sidebar with +ADD button for quick task creation.
 - **2026-09-13** — Task 7: Made end_time optional for tasks/reminders. Added migration.
 - **2026-09-13** — Task 8: Removed task type (task/event/reminder) from modal and DB.
+- **2026-09-13** — Task 9: Prepared for deployment. Added CORS config, API abstraction layer, Vercel config.
 

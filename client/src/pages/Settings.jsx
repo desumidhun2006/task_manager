@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api'
 
 export default function Settings() {
   const { user } = useAuth()
@@ -16,7 +16,7 @@ export default function Settings() {
 
   const fetchSettings = async () => {
     try {
-      const res = await axios.get('/api/settings')
+      const res = await api.get('/api/settings')
       setDefaultView(res.data.defaultView || 'monthly')
       setReminderSMS(res.data.reminderSMS ?? true)
       setReminderEmail(res.data.reminderEmail ?? true)
@@ -27,7 +27,7 @@ export default function Settings() {
 
   const handleSave = async () => {
     try {
-      await axios.put('/api/settings', { defaultView, reminderSMS, reminderEmail })
+      await api.put('/api/settings', { defaultView, reminderSMS, reminderEmail })
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } catch (err) {

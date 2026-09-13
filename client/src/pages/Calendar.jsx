@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import api from '../api'
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isToday, addMonths, subMonths, startOfDay, endOfDay, addHours, format as fnsFormat } from 'date-fns'
 import TaskModal from '../components/TaskModal'
 
@@ -23,7 +23,7 @@ export default function Calendar() {
     try {
       const start = view === 'monthly' ? startOfMonth(currentDate) : view === 'weekly' ? startOfWeek(currentDate) : startOfDay(currentDate)
       const end = view === 'monthly' ? endOfMonth(currentDate) : view === 'weekly' ? endOfWeek(currentDate) : endOfDay(currentDate)
-      const res = await axios.get(`/api/tasks?start=${start.toISOString()}&end=${end.toISOString()}`)
+      const res = await api.get(`/api/tasks?start=${start.toISOString()}&end=${end.toISOString()}`)
       setTasks(res.data)
     } catch (err) {
       console.error('Failed to fetch tasks')
@@ -54,9 +54,9 @@ export default function Calendar() {
   const handleSave = async (taskData) => {
     try {
       if (editingTask) {
-        await axios.put(`/api/tasks/${editingTask.id}`, taskData)
+        await api.put(`/api/tasks/${editingTask.id}`, taskData)
       } else {
-        await axios.post('/api/tasks', taskData)
+        await api.post('/api/tasks', taskData)
       }
       fetchTasks()
       setModalOpen(false)
@@ -67,7 +67,7 @@ export default function Calendar() {
 
   const handleDelete = async (taskId) => {
     try {
-      await axios.delete(`/api/tasks/${taskId}`)
+      await api.delete(`/api/tasks/${taskId}`)
       fetchTasks()
       setModalOpen(false)
     } catch (err) {
