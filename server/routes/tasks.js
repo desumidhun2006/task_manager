@@ -22,19 +22,15 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { title, description, start_time, end_time, reminder } = req.body
-    const [task] = await db('tasks')
-      .insert({
-        user_id: req.user.id,
-        title,
-        description,
-        start_time,
-        end_time,
-        reminder
-      })
-      .returning('*')
+    const [task] = await db.raw(
+      `INSERT INTO tasks (user_id, title, description, start_time, end_time, reminder, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW()) RETURNING *`,
+      [req.user.id, title, description, start_time, end_time || null, reminder]
+    )
     res.status(201).json(task)
   } catch (err) {
-    res.status(500).json({ message: 'Failed to create task' })
+    console.error('Create task error:', err.message)
+    res.status(500).json({ message: 'Failed to create task', error: err.message })
   }
 })
 
