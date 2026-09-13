@@ -67,6 +67,16 @@ task_manager/
 - [x] Default view configurable via `calentask_default_view` localStorage key
 - [x] Dev mode: "View all mockups" link + "Clear login" button
 
+### 2026-09-13 - Working Auth Forms
+- [x] Email sign up form with full name, email, phone, password, confirm password
+- [x] Login form with email + password
+- [x] Password strength indicator (weak/fair/good/strong)
+- [x] Password match validation
+- [x] Password visibility toggle
+- [x] Users stored in localStorage (`calentask_users`)
+- [x] Duplicate email detection
+- [x] Form validation with error messages
+
 ## Git Commits
 | Commit | Message |
 |--------|---------|
