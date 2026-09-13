@@ -173,17 +173,25 @@ export default function Calendar() {
     )
   }
 
+  const handleAddClick = () => {
+    setSelectedDate(new Date())
+    setSelectedTime(null)
+    setEditingTask(null)
+    setModalOpen(true)
+  }
+
   return (
-    <div className="container">
-      <div className="page-header">
-        <div className="nav">
+    <div className="app-layout">
+      <aside className="sidebar">
+        <button className="btn add-btn" onClick={handleAddClick}>+ ADD</button>
+        <nav className="sidebar-nav">
           <Link to="/settings">Settings</Link>
           <button className="btn btn-secondary" onClick={logout}>Logout</button>
-        </div>
-      </div>
+        </nav>
+      </aside>
 
-      <div className="card" style={{ marginBottom: 24 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+      <main className="main-content">
+        <div className="page-header">
           <div style={{ display: 'flex', gap: 8 }}>
             <button className="btn btn-secondary" onClick={() => setCurrentDate(subMonths(currentDate, 1))}>Prev</button>
             <h3>{format(currentDate, 'MMMM yyyy')}</h3>
@@ -198,10 +206,12 @@ export default function Calendar() {
           </div>
         </div>
 
-        {view === 'monthly' && renderMonthly()}
-        {view === 'weekly' && renderWeekly()}
-        {view === 'daily' && renderDaily()}
-      </div>
+        <div className="card">
+          {view === 'monthly' && renderMonthly()}
+          {view === 'weekly' && renderWeekly()}
+          {view === 'daily' && renderDaily()}
+        </div>
+      </main>
 
       {modalOpen && (
         <TaskModal
