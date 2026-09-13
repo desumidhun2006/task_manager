@@ -59,3 +59,11 @@ task_manager/
 - [x] Added `.gitignore` for macOS/Node.js artifacts
 - [x] Created `index.html` hub page linking all 15 screen mockups
 - [x] Project ready for local development
+
+## Git Commits
+| Commit | Message |
+|--------|---------|
+| d33f6a6 | Initial commit |
+| 930469e | Add journey.md to track project progress |
+| 8453edd | Cleanup: add .gitignore, remove accidental headshot image and .DS_Store |
+| baeee38 | Add index.html hub page linking all design mockups |
