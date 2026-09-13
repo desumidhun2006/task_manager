@@ -57,3 +57,5 @@ task_manager/
 - [x] Deleted unnecessary `professional_corporate_headshot` directory (accidental AI-generated image)
 - [x] Deleted `.DS_Store` macOS artifacts
 - [x] Added `.gitignore` for macOS/Node.js artifacts
+- [x] Created `index.html` hub page linking all 15 screen mockups
+- [x] Project ready for local development
