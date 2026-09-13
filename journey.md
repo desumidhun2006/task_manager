@@ -11,4 +11,5 @@
 - **2026-09-13** — Task 2: Set up Vite + React app. Created `App.jsx`, `AuthContext`, `ProtectedRoute`, pages: `Login`, `Signup`, `Calendar`, `Settings`. Added `TaskModal` component. CSS with base styles.
 - **2026-09-13** — Task 3: Set up Express server. Created routes (`auth`, `tasks`, `settings`), middleware (`auth`), db connection (`knex`), migrations for `users`, `tasks`, `settings` tables.
 - **2026-09-13** — Task 4: Added notification services (Twilio SMS, Nodemailer email), reminder cron job. Added calendar + modal CSS.
+- **2026-09-13** — Task 5: Installed PostgreSQL, created DB, ran migrations. Changed port to 5001 (5000 occupied by macOS). Both servers running.
 
