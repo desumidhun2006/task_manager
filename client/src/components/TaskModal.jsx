@@ -24,7 +24,6 @@ export default function TaskModal({ task, date, time, onSave, onDelete, onClose 
       description,
       start_time: new Date(startTime).toISOString(),
       end_time: endTime ? new Date(endTime).toISOString() : null,
-      type,
       reminder
     })
   }
@@ -55,25 +54,15 @@ export default function TaskModal({ task, date, time, onSave, onDelete, onClose 
               <input className="input" type="datetime-local" value={endTime} onChange={e => setEndTime(e.target.value)} />
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 12 }}>
-            <div className="form-group" style={{ flex: 1 }}>
-              <label>Type</label>
-              <select className="input" value={type} onChange={e => setType(e.target.value)}>
-                <option value="task">Task</option>
-                <option value="event">Event</option>
-                <option value="reminder">Reminder</option>
-              </select>
-            </div>
-            <div className="form-group" style={{ flex: 1 }}>
-              <label>Reminder</label>
-              <select className="input" value={reminder} onChange={e => setReminder(e.target.value)}>
-                <option value="none">None</option>
-                <option value="15m">15 min before</option>
-                <option value="30m">30 min before</option>
-                <option value="1h">1 hour before</option>
-                <option value="1d">1 day before</option>
-              </select>
-            </div>
+          <div className="form-group">
+            <label>Reminder</label>
+            <select className="input" value={reminder} onChange={e => setReminder(e.target.value)}>
+              <option value="none">None</option>
+              <option value="15m">15 min before</option>
+              <option value="30m">30 min before</option>
+              <option value="1h">1 hour before</option>
+              <option value="1d">1 day before</option>
+            </select>
           </div>
           <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
             <button className="btn" type="submit">{task ? 'Update' : 'Create'}</button>

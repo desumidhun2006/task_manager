@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { title, description, start_time, end_time, type, reminder } = req.body
+    const { title, description, start_time, end_time, reminder } = req.body
     const [task] = await db('tasks')
       .insert({
         user_id: req.user.id,
@@ -29,7 +29,6 @@ router.post('/', async (req, res) => {
         description,
         start_time,
         end_time,
-        type,
         reminder
       })
       .returning('*')
@@ -41,10 +40,10 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   try {
-    const { title, description, start_time, end_time, type, reminder } = req.body
+    const { title, description, start_time, end_time, reminder } = req.body
     const [task] = await db('tasks')
       .where({ id: req.params.id, user_id: req.user.id })
-      .update({ title, description, start_time, end_time, type, reminder, updated_at: new Date() })
+      .update({ title, description, start_time, end_time, reminder, updated_at: new Date() })
       .returning('*')
     res.json(task)
   } catch (err) {
