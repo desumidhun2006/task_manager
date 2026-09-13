@@ -10,9 +10,9 @@ export default function TaskModal({ task, date, time, onSave, onDelete, onClose 
     format(date, "yyyy-MM-dd'T'09:00")
   )
   const [endTime, setEndTime] = useState(
-    task ? format(new Date(task.end_time), "yyyy-MM-dd'T'HH:mm") :
+    task?.end_time ? format(new Date(task.end_time), "yyyy-MM-dd'T'HH:mm") :
     time ? format(new Date(time.getTime() + 3600000), "yyyy-MM-dd'T'HH:mm") :
-    format(date, "yyyy-MM-dd'T'10:00")
+    ''
   )
   const [type, setType] = useState(task?.type || 'task')
   const [reminder, setReminder] = useState(task?.reminder || 'none')
@@ -23,7 +23,7 @@ export default function TaskModal({ task, date, time, onSave, onDelete, onClose 
       title,
       description,
       start_time: new Date(startTime).toISOString(),
-      end_time: new Date(endTime).toISOString(),
+      end_time: endTime ? new Date(endTime).toISOString() : null,
       type,
       reminder
     })
@@ -51,8 +51,8 @@ export default function TaskModal({ task, date, time, onSave, onDelete, onClose 
               <input className="input" type="datetime-local" value={startTime} onChange={e => setStartTime(e.target.value)} required />
             </div>
             <div className="form-group" style={{ flex: 1 }}>
-              <label>End</label>
-              <input className="input" type="datetime-local" value={endTime} onChange={e => setEndTime(e.target.value)} required />
+              <label>End (optional)</label>
+              <input className="input" type="datetime-local" value={endTime} onChange={e => setEndTime(e.target.value)} />
             </div>
           </div>
           <div style={{ display: 'flex', gap: 12 }}>
