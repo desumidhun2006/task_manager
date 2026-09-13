@@ -60,6 +60,13 @@ task_manager/
 - [x] Created `index.html` hub page linking all 15 screen mockups
 - [x] Project ready for local development
 
+### 2026-09-13 - Auth Flow & Smart Routing
+- [x] Implemented localStorage-based auth check on index.html
+- [x] New users see auth screen (Google/Apple SSO + Email sign up)
+- [x] Returning users auto-redirect to default calendar view (monthly)
+- [x] Default view configurable via `calentask_default_view` localStorage key
+- [x] Dev mode: "View all mockups" link + "Clear login" button
+
 ## Git Commits
 | Commit | Message |
 |--------|---------|
