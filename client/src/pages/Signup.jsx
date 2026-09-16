@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
+import PhoneInput from '../components/PhoneInput'
 
 export default function Signup() {
   const [name, setName] = useState('')
@@ -38,7 +39,7 @@ export default function Signup() {
           </div>
           <div className="form-group">
             <label>Phone</label>
-            <input className="input" type="tel" value={phone} onChange={e => setPhone(e.target.value)} required />
+            <PhoneInput value={phone} onChange={setPhone} required />
           </div>
           <div className="form-group">
             <label>Password</label>

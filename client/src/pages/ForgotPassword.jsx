@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import api from '../api'
+import PhoneInput from '../components/PhoneInput'
 
 export default function ForgotPassword() {
   const [step, setStep] = useState(1)
@@ -69,7 +70,11 @@ export default function ForgotPassword() {
             </div>
             <div className="form-group">
               <label>{method === 'email' ? 'Email' : 'Phone'}</label>
-              <input className="input" type={method === 'email' ? 'email' : 'tel'} value={value} onChange={e => setValue(e.target.value)} required />
+              {method === 'email' ? (
+                <input className="input" type="email" value={value} onChange={e => setValue(e.target.value)} required />
+              ) : (
+                <PhoneInput value={value} onChange={setValue} required />
+              )}
             </div>
             <button className="btn" type="submit" style={{ width: '100%' }}>Send code</button>
           </form>

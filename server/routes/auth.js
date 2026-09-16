@@ -7,16 +7,28 @@ const { sendSMS } = require('../services/sms')
 
 const router = express.Router()
 
+function normalizePhone(phone) {
+  if (!phone) return phone
+  let p = phone.replace(/[\s\-()]/g, '')
+  if (p.startsWith('+91')) p = p.slice(3)
+  else if (p.startsWith('91') && p.length > 10) p = p.slice(2)
+  return p
+}
+
 router.post('/signup', async (req, res) => {
   try {
     const { name, email, phone, password } = req.body
+    const normalizedPhone = normalizePhone(phone)
 
     const existing = await db('users').where({ email }).first()
     if (existing) return res.status(400).json({ message: 'Email already registered' })
 
+    const existingPhone = await db('users').where({ phone: normalizedPhone }).first()
+    if (existingPhone) return res.status(400).json({ message: 'Phone number already registered' })
+
     const password_hash = await bcrypt.hash(password, 10)
     const [user] = await db('users')
-      .insert({ name, email, phone, password_hash })
+      .insert({ name, email, phone: normalizedPhone, password_hash })
       .returning(['id', 'name', 'email', 'phone'])
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' })
@@ -49,7 +61,8 @@ router.post('/forgot-password', async (req, res) => {
     if (!['email', 'phone'].includes(method) || !value) {
       return res.status(400).json({ message: 'Choose email or phone and provide value' })
     }
-    const user = await db('users').where(method === 'email' ? { email: value } : { phone: value }).first()
+    const lookupValue = method === 'phone' ? normalizePhone(value) : value
+    const user = await db('users').where(method === 'email' ? { email: lookupValue } : { phone: lookupValue }).first()
     if (!user) return res.status(404).json({ message: `${method} not registered` })
 
     const code = Math.floor(100000 + Math.random() * 900000).toString()
@@ -73,7 +86,8 @@ router.post('/verify-code', async (req, res) => {
     const { method, value, code } = req.body
     if (!code) return res.status(400).json({ message: 'Code required' })
 
-    const user = await db('users').where(method === 'email' ? { email: value } : { phone: value }).first()
+    const lookupValue = method === 'phone' ? normalizePhone(value) : value
+    const user = await db('users').where(method === 'email' ? { email: lookupValue } : { phone: lookupValue }).first()
     if (!user) return res.status(404).json({ message: 'User not found' })
 
     const row = await db('password_resets').where({ user_id: user.id, code }).first()
@@ -95,7 +109,8 @@ router.post('/reset-password', async (req, res) => {
     if (!code || !newPassword || newPassword.length < 6) {
       return res.status(400).json({ message: 'Code + 6-char password required' })
     }
-    const user = await db('users').where(method === 'email' ? { email: value } : { phone: value }).first()
+    const lookupValue = method === 'phone' ? normalizePhone(value) : value
+    const user = await db('users').where(method === 'email' ? { email: lookupValue } : { phone: lookupValue }).first()
     if (!user) return res.status(404).json({ message: 'User not found' })
 
     const row = await db('password_resets').where({ user_id: user.id, code }).first()
