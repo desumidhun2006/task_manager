@@ -22,11 +22,16 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { title, description, start_time, end_time, reminder } = req.body
-    const [task] = await db.raw(
-      `INSERT INTO tasks (user_id, title, description, start_time, end_time, reminder, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW()) RETURNING *`,
-      [req.user.id, title, description, start_time, end_time || null, reminder]
-    )
+    const [task] = await db('tasks')
+      .insert({
+        user_id: req.user.id,
+        title,
+        description,
+        start_time,
+        end_time: end_time || null,
+        reminder
+      })
+      .returning('*')
     res.status(201).json(task)
   } catch (err) {
     console.error('Create task error:', err.message)
@@ -39,11 +44,12 @@ router.put('/:id', async (req, res) => {
     const { title, description, start_time, end_time, reminder } = req.body
     const [task] = await db('tasks')
       .where({ id: req.params.id, user_id: req.user.id })
-      .update({ title, description, start_time, end_time, reminder, updated_at: new Date() })
+      .update({ title, description, start_time, end_time: end_time || null, reminder, updated_at: new Date() })
       .returning('*')
     res.json(task)
   } catch (err) {
-    res.status(500).json({ message: 'Failed to update task' })
+    console.error('Update task error:', err.message)
+    res.status(500).json({ message: 'Failed to update task', error: err.message })
   }
 })
 

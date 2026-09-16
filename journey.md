@@ -16,4 +16,6 @@
 - **2026-09-13** — Task 7: Made end_time optional for tasks/reminders. Added migration.
 - **2026-09-13** — Task 8: Removed task type (task/event/reminder) from modal and DB.
 - **2026-09-13** — Task 9: Prepared for deployment. Added CORS config, API abstraction layer, Vercel config.
+- **2026-09-16** — Task 10: Fixed task create. Dropped `tasks_reminder_check` so `0m` works. Reverted raw insert to knex.
+- **2026-09-16** — Task 11: Added forgot password. `password_resets` table, `/forgot-password` sends code via email/SMS, `/reset-password` resets. New `ForgotPassword` page + login link.
 
