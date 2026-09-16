@@ -19,4 +19,5 @@
 - **2026-09-16** — Task 10: Fixed task create. Dropped `tasks_reminder_check` so `0m` works. Reverted raw insert to knex.
 - **2026-09-16** — Task 11: Added forgot password. `password_resets` table, `/forgot-password` sends code via email/SMS, `/reset-password` resets. New `ForgotPassword` page + login link.
 - **2026-09-16** — Task 12: Swapped Nodemailer for Resend API. Updated email service + env vars.
+- **2026-09-16** — Task 13: Forgot password 3-step flow: send code → verify code → reset password. Removed dev code display. Added confirm password.
 

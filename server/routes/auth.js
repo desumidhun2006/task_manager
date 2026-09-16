@@ -61,10 +61,31 @@ router.post('/forgot-password', async (req, res) => {
     if (method === 'email') await sendEmail(user.email, 'Password reset code', msg)
     else await sendSMS(user.phone, msg)
 
-    const dev = !process.env.SMTP_USER || !process.env.TWILIO_ACCOUNT_SID
+    const dev = !process.env.RESEND_API_KEY && !process.env.TWILIO_ACCOUNT_SID
     res.json({ message: 'Code sent', ...(dev ? { debugCode: code } : {}) })
   } catch (err) {
     res.status(500).json({ message: 'Failed to send code', error: err.message })
+  }
+})
+
+router.post('/verify-code', async (req, res) => {
+  try {
+    const { method, value, code } = req.body
+    if (!code) return res.status(400).json({ message: 'Code required' })
+
+    const user = await db('users').where(method === 'email' ? { email: value } : { phone: value }).first()
+    if (!user) return res.status(404).json({ message: 'User not found' })
+
+    const row = await db('password_resets').where({ user_id: user.id, code }).first()
+    if (!row) return res.status(400).json({ message: 'Invalid code' })
+    if (new Date(row.expires_at) < new Date()) {
+      await db('password_resets').where({ id: row.id }).del()
+      return res.status(400).json({ message: 'Code expired' })
+    }
+
+    res.json({ message: 'Code verified' })
+  } catch (err) {
+    res.status(500).json({ message: 'Verification failed', error: err.message })
   }
 })
 
