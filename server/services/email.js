@@ -1,18 +1,18 @@
 async function sendEmail(to, subject, text) {
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
+  const { RESEND_API_KEY, EMAIL_FROM } = process.env
+  if (!RESEND_API_KEY) {
     console.log(`Email dev mode to ${to}: ${subject} - ${text}`)
     return
   }
   try {
-    const nodemailer = require('nodemailer')
-    const transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      secure: false,
-      auth: { user: SMTP_USER, pass: SMTP_PASS }
+    const { Resend } = require('resend')
+    const resend = new Resend(RESEND_API_KEY)
+    await resend.emails.send({
+      from: EMAIL_FROM || 'Task Manager <onboarding@resend.dev>',
+      to,
+      subject,
+      text
     })
-    await transporter.sendMail({ from: SMTP_USER, to, subject, text })
     console.log(`Email sent to ${to}`)
   } catch (err) {
     console.error('Email failed:', err.message)

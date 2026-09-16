@@ -18,4 +18,5 @@
 - **2026-09-13** — Task 9: Prepared for deployment. Added CORS config, API abstraction layer, Vercel config.
 - **2026-09-16** — Task 10: Fixed task create. Dropped `tasks_reminder_check` so `0m` works. Reverted raw insert to knex.
 - **2026-09-16** — Task 11: Added forgot password. `password_resets` table, `/forgot-password` sends code via email/SMS, `/reset-password` resets. New `ForgotPassword` page + login link.
+- **2026-09-16** — Task 12: Swapped Nodemailer for Resend API. Updated email service + env vars.
 
