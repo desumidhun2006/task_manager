@@ -71,10 +71,9 @@ router.post('/forgot-password', async (req, res) => {
     await db('password_resets').insert({ user_id: user.id, code, expires_at })
 
     const msg = `Password reset code: ${code}. Valid 10 min.`
+    const dev = !process.env.RESEND_API_KEY || !process.env.TWILIO_ACCOUNT_SID
     if (method === 'email') await sendEmail(user.email, 'Password reset code', msg)
     else await sendSMS(user.phone, msg)
-
-    const dev = !process.env.RESEND_API_KEY && !process.env.TWILIO_ACCOUNT_SID
     res.json({ message: 'Code sent', ...(dev ? { debugCode: code } : {}) })
   } catch (err) {
     res.status(500).json({ message: 'Failed to send code', error: err.message })

@@ -1,18 +1,21 @@
 exports.up = function(knex) {
-  return knex.raw(`
-    ALTER TABLE tasks 
-    ALTER COLUMN reminder TYPE TEXT
+  return knex.schema.raw(`
+    DO $$ BEGIN
+      ALTER TABLE tasks ALTER COLUMN reminder TYPE TEXT;
+    EXCEPTION WHEN others THEN null;
+    END $$;
   `).then(() => {
-    return knex.raw(`
-      ALTER TABLE tasks 
-      ALTER COLUMN reminder SET DEFAULT 'none'
+    return knex.schema.raw(`
+      DO $$ BEGIN
+        ALTER TABLE tasks ALTER COLUMN reminder SET DEFAULT 'none';
+      EXCEPTION WHEN others THEN null;
+      END $$;
     `)
   })
 }
 
 exports.down = function(knex) {
-  return knex.raw(`
-    ALTER TABLE tasks 
-    ALTER COLUMN reminder TYPE VARCHAR(255)
+  return knex.schema.raw(`
+    ALTER TABLE tasks ALTER COLUMN reminder TYPE VARCHAR(255)
   `)
 }
