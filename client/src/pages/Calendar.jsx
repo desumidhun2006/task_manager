@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
 import api from '../api'
@@ -147,6 +147,10 @@ export default function Calendar() {
 
   const renderDaily = () => {
     const hours = Array.from({ length: 24 }, (_, i) => i)
+    const now = new Date()
+    const currentHour = now.getHours()
+    const currentMinute = now.getMinutes()
+    const isToday = format(currentDate, 'yyyy-MM-dd') === format(now, 'yyyy-MM-dd')
 
     return (
       <div className="daily-grid">
@@ -156,10 +160,14 @@ export default function Calendar() {
             const tDate = new Date(t.start_time)
             return tDate.getHours() === hour
           })
+          const isCurrentHour = isToday && hour === currentHour
           return (
-            <div key={hour} className="daily-hour" onClick={() => handleTimeClick(time)}>
+            <div key={hour} className={`daily-hour ${isCurrentHour ? 'current-hour' : ''}`} onClick={() => handleTimeClick(time)}>
               <div className="daily-time">{fnsFormat(time, 'HH:00')}</div>
               <div className="daily-tasks">
+                {isCurrentHour && (
+                  <div className="current-time-line" style={{ top: `${(currentMinute / 60) * 100}%` }} />
+                )}
                 {hourTasks.map(t => (
                   <div key={t.id} className="task-chip" onClick={(e) => { e.stopPropagation(); handleTaskClick(t) }}>
                     {t.title}

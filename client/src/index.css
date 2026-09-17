@@ -555,6 +555,37 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  position: relative;
+}
+
+.daily-hour.current-hour {
+  background: rgba(124, 106, 255, 0.08);
+}
+
+.daily-hour.current-hour .daily-time {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.current-time-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--danger);
+  box-shadow: 0 0 8px var(--danger);
+  z-index: 2;
+}
+
+.current-time-line::before {
+  content: '';
+  position: absolute;
+  left: -5px;
+  top: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--danger);
 }
 
 /* ===== MODAL ===== */
