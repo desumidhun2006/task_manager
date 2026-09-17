@@ -27,3 +27,4 @@
 - **2026-09-17** — Task 18: LAN access. Server listens on 0.0.0.0, CORS origin true. Vite host 0.0.0.0. People on same WiFi can access app.
 - **2026-09-17** — Task 19: Delete account with email verification. request-delete + confirm-delete endpoints. Danger zone section in Settings. 3-step flow: click delete → send code → enter code → account deleted.
 - **2026-09-17** — Task 20: Wiped all user data. Created migration 012 to delete all rows from users, tasks, settings, password_resets tables. All accounts removed.
+- **2026-09-17** — Task 21: Email verification on signup. Added `email_verified` column (default false) to users. Signup creates user + sends 6-digit code. New `/verify-signup` endpoint verifies code, marks verified, returns token. Login rejects unverified users. Signup page now 2-step: enter details → enter code.

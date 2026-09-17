@@ -16,13 +16,46 @@ router.post('/signup', async (req, res) => {
 
     const password_hash = await bcrypt.hash(password, 10)
     const [user] = await db('users')
-      .insert({ name, email, password_hash })
+      .insert({ name, email, password_hash, email_verified: false })
       .returning(['id', 'name', 'email'])
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' })
-    res.status(201).json({ token, user })
+    const code = Math.floor(100000 + Math.random() * 900000).toString()
+    const expires_at = new Date(Date.now() + 10 * 60 * 1000)
+    await db('password_resets').where({ user_id: user.id }).del()
+    await db('password_resets').insert({ user_id: user.id, code, expires_at })
+
+    const msg = `Your verification code: ${code}. Valid 10 min.`
+    await sendEmail(user.email, 'Verify your email', msg)
+
+    const dev = !process.env.RESEND_API_KEY
+    res.status(201).json({ message: 'Verification code sent', ...(dev ? { debugCode: code } : {}) })
   } catch (err) {
     res.status(500).json({ message: 'Signup failed', error: err.message })
+  }
+})
+
+router.post('/verify-signup', async (req, res) => {
+  try {
+    const { email, code } = req.body
+    if (!code) return res.status(400).json({ message: 'Code required' })
+
+    const user = await db('users').where({ email }).first()
+    if (!user) return res.status(404).json({ message: 'User not found' })
+
+    const row = await db('password_resets').where({ user_id: user.id, code }).first()
+    if (!row) return res.status(400).json({ message: 'Invalid code' })
+    if (new Date(row.expires_at) < new Date()) {
+      await db('password_resets').where({ id: row.id }).del()
+      return res.status(400).json({ message: 'Code expired' })
+    }
+
+    await db('users').where({ id: user.id }).update({ email_verified: true, updated_at: new Date() })
+    await db('password_resets').where({ user_id: user.id }).del()
+
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' })
+    res.json({ token, user: { id: user.id, name: user.name, email: user.email } })
+  } catch (err) {
+    res.status(500).json({ message: 'Verification failed', error: err.message })
   }
 })
 
@@ -35,6 +68,8 @@ router.post('/login', async (req, res) => {
 
     const valid = await bcrypt.compare(password, user.password_hash)
     if (!valid) return res.status(400).json({ message: 'Invalid credentials' })
+
+    if (!user.email_verified) return res.status(403).json({ message: 'Email not verified. Check your inbox.' })
 
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' })
     res.json({ token, user: { id: user.id, name: user.name, email: user.email } })
