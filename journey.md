@@ -31,3 +31,4 @@
 - **2026-09-17** — Task 22: Interactive landing page. Created `Landing.jsx` with navbar (logo + nav links + Login/Sign Up buttons top right), hero section with animated blobs, gradient title, CTA buttons, fake app preview window, features grid (6 cards with hover highlight), stats section, CTA section, footer. Dark glassmorphism theme consistent. Updated `App.jsx` — `/` route → Landing, wildcard redirects to `/`. Added ~250 lines CSS to index.css. Fixed unescaped quote in feature description.
 - **2026-09-17** — Task 23: Added back button (← Back) to Login and Signup pages linking to landing page `/`. Added `.auth-back` CSS.
 - **2026-09-17** — Task 24: Removed Quick Add and Dark Mode feature cards from landing page. Updated features grid to 2 columns.
+- **2026-09-17** — Task 25: Skip landing page if logged in. Added `useAuth` check in Landing.jsx — redirects to `/calendar` if user exists.
