@@ -103,7 +103,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body
 
     const user = await db('users').where({ email }).first()
-    if (!user) return res.status(400).json({ message: 'Invalid credentials' })
+    if (!user) return res.status(400).json({ message: 'Account not found. Please sign up.' })
     if (!user.password_hash) return res.status(400).json({ message: 'Account not completed. Please sign up again.' })
 
     const valid = await bcrypt.compare(password, user.password_hash)
