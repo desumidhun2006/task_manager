@@ -25,6 +25,7 @@ export default function Login() {
       <div className="auth-blob auth-blob-1" />
       <div className="auth-blob auth-blob-2" />
       <div className="auth-card">
+        <Link to="/" className="auth-back">← Back</Link>
         <h2>Welcome back</h2>
         <p className="auth-subtitle">Sign in to your TaskFlow account</p>
         {error && <div className="auth-error">{error}</div>}

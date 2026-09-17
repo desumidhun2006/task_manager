@@ -368,6 +368,15 @@ body {
 
 .auth-card a:hover { color: var(--accent); }
 
+.auth-back {
+  display: inline-block;
+  font-size: 13px;
+  color: var(--text-muted) !important;
+  margin-bottom: 16px;
+  transition: color var(--transition);
+}
+.auth-back:hover { color: var(--text) !important; }
+
 .auth-error {
   background: rgba(244, 63, 94, 0.12);
   border: 1px solid rgba(244, 63, 94, 0.3);

@@ -42,6 +42,7 @@ export default function Signup() {
       <div className="auth-blob auth-blob-1" />
       <div className="auth-blob auth-blob-2" />
       <div className="auth-card">
+        <Link to="/" className="auth-back">← Back</Link>
         <h2>Create account</h2>
         <p className="auth-subtitle">Start managing your tasks smarter</p>
 
