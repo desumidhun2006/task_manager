@@ -26,13 +26,18 @@ export function AuthProvider({ children }) {
     setUser(res.data.user)
   }
 
-  const signup = async (name, email, password) => {
-    const res = await api.post('/api/auth/signup', { name, email, password })
+  const signup = async (name, email) => {
+    const res = await api.post('/api/auth/signup', { name, email })
     return res.data
   }
 
   const verifySignup = async (email, code) => {
     const res = await api.post('/api/auth/verify-signup', { email, code })
+    return res.data
+  }
+
+  const setPassword = async (tempToken, password) => {
+    const res = await api.post('/api/auth/set-password', { tempToken, password })
     localStorage.setItem('token', res.data.token)
     setToken(res.data.token)
     setUser(res.data.user)
@@ -45,7 +50,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, signup, verifySignup, logout }}>
+    <AuthContext.Provider value={{ user, token, loading, login, signup, verifySignup, setPassword, logout }}>
       {children}
     </AuthContext.Provider>
   )

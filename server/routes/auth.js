@@ -9,19 +9,30 @@ const router = express.Router()
 
 router.post('/signup', async (req, res) => {
   try {
-    const { name, email, password } = req.body
+    const { name, email } = req.body
+    if (!name || !email) return res.status(400).json({ message: 'Name and email required' })
 
     const existing = await db('users').where({ email }).first()
-    if (existing) return res.status(400).json({ message: 'Email already registered' })
+    if (existing) {
+      if (!existing.password_hash) {
+        const code = Math.floor(100000 + Math.random() * 900000).toString()
+        const expires_at = new Date(Date.now() + 10 * 60 * 1000)
+        await db('password_resets').where({ user_id: existing.id }).del()
+        await db('password_resets').insert({ user_id: existing.id, code, expires_at })
+        const msg = `Your verification code: ${code}. Valid 10 min.`
+        await sendEmail(existing.email, 'Verify your email', msg)
+        const dev = !process.env.RESEND_API_KEY
+        return res.status(201).json({ message: 'Verification code sent', ...(dev ? { debugCode: code } : {}) })
+      }
+      return res.status(400).json({ message: 'Email already registered' })
+    }
 
-    const password_hash = await bcrypt.hash(password, 10)
     const [user] = await db('users')
-      .insert({ name, email, password_hash, email_verified: false })
+      .insert({ name, email, password_hash: null, email_verified: false })
       .returning(['id', 'name', 'email'])
 
     const code = Math.floor(100000 + Math.random() * 900000).toString()
     const expires_at = new Date(Date.now() + 10 * 60 * 1000)
-    await db('password_resets').where({ user_id: user.id }).del()
     await db('password_resets').insert({ user_id: user.id, code, expires_at })
 
     const msg = `Your verification code: ${code}. Valid 10 min.`
@@ -52,10 +63,38 @@ router.post('/verify-signup', async (req, res) => {
     await db('users').where({ id: user.id }).update({ email_verified: true, updated_at: new Date() })
     await db('password_resets').where({ user_id: user.id }).del()
 
+    const tempToken = jwt.sign({ id: user.id, purpose: 'set-password' }, process.env.JWT_SECRET, { expiresIn: '15m' })
+    res.json({ message: 'Email verified', tempToken })
+  } catch (err) {
+    res.status(500).json({ message: 'Verification failed', error: err.message })
+  }
+})
+
+router.post('/set-password', async (req, res) => {
+  try {
+    const { tempToken, password } = req.body
+    if (!tempToken || !password || password.length < 6) {
+      return res.status(400).json({ message: 'Token + 6-char password required' })
+    }
+
+    let decoded
+    try {
+      decoded = jwt.verify(tempToken, process.env.JWT_SECRET)
+    } catch {
+      return res.status(400).json({ message: 'Invalid or expired token' })
+    }
+    if (decoded.purpose !== 'set-password') return res.status(400).json({ message: 'Invalid token' })
+
+    const user = await db('users').where({ id: decoded.id }).first()
+    if (!user) return res.status(404).json({ message: 'User not found' })
+
+    const password_hash = await bcrypt.hash(password, 10)
+    await db('users').where({ id: user.id }).update({ password_hash, updated_at: new Date() })
+
     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' })
     res.json({ token, user: { id: user.id, name: user.name, email: user.email } })
   } catch (err) {
-    res.status(500).json({ message: 'Verification failed', error: err.message })
+    res.status(500).json({ message: 'Failed to set password', error: err.message })
   }
 })
 
@@ -65,6 +104,7 @@ router.post('/login', async (req, res) => {
 
     const user = await db('users').where({ email }).first()
     if (!user) return res.status(400).json({ message: 'Invalid credentials' })
+    if (!user.password_hash) return res.status(400).json({ message: 'Account not completed. Please sign up again.' })
 
     const valid = await bcrypt.compare(password, user.password_hash)
     if (!valid) return res.status(400).json({ message: 'Invalid credentials' })

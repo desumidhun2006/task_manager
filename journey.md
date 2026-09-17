@@ -32,3 +32,4 @@
 - **2026-09-17** — Task 23: Added back button (← Back) to Login and Signup pages linking to landing page `/`. Added `.auth-back` CSS.
 - **2026-09-17** — Task 24: Removed Quick Add and Dark Mode feature cards from landing page. Updated features grid to 2 columns.
 - **2026-09-17** — Task 25: Skip landing page if logged in. Added `useAuth` check in Landing.jsx — redirects to `/calendar` if user exists.
+- **2026-09-17** — Task 26: Fixed signup "Signup failed" error. Root cause: stale server process running old code with `phone` column reference. Restarted server. Also restructured signup to 3-step email-first flow: (1) enter name+email → send code, (2) verify code → email confirmed, (3) set password → account created. New `/set-password` endpoint with temp JWT token (15min expiry). Migration 014 made `password_hash` nullable. Updated AuthContext with `setPassword`. Login guards against null password_hash. Added confirm password field on step 3.

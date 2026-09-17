@@ -7,10 +7,12 @@ export default function Signup() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [code, setCode] = useState('')
   const [msg, setMsg] = useState('')
   const [error, setError] = useState('')
-  const { signup, verifySignup } = useAuth()
+  const [tempToken, setTempToken] = useState('')
+  const { signup, verifySignup, setPassword: setPasswordReq } = useAuth()
   const navigate = useNavigate()
 
   const handleSignup = async (e) => {
@@ -18,7 +20,7 @@ export default function Signup() {
     setError('')
     setMsg('')
     try {
-      await signup(name, email, password)
+      await signup(name, email)
       setMsg('Code sent. Check your email.')
       setStep(2)
     } catch (err) {
@@ -30,10 +32,27 @@ export default function Signup() {
     e.preventDefault()
     setError('')
     try {
-      await verifySignup(email, code)
-      navigate('/calendar')
+      const data = await verifySignup(email, code)
+      setTempToken(data.tempToken)
+      setMsg('Email verified! Now set your password.')
+      setStep(3)
     } catch (err) {
       setError(err.response?.data?.message || 'Verification failed')
+    }
+  }
+
+  const handleSetPassword = async (e) => {
+    e.preventDefault()
+    setError('')
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      return
+    }
+    try {
+      await setPasswordReq(tempToken, password)
+      navigate('/calendar')
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to set password')
     }
   }
 
@@ -48,7 +67,8 @@ export default function Signup() {
 
         <div className="step-indicator">
           <div className={`step-dot ${step >= 1 ? (step > 1 ? 'done' : 'active') : ''}`} />
-          <div className={`step-dot ${step >= 2 ? 'active' : ''}`} />
+          <div className={`step-dot ${step >= 2 ? (step > 2 ? 'done' : (step === 2 ? 'active' : '')) : ''}`} />
+          <div className={`step-dot ${step >= 3 ? 'active' : ''}`} />
         </div>
 
         {error && <div className="auth-error">{error}</div>}
@@ -64,11 +84,7 @@ export default function Signup() {
               <label>Email</label>
               <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com" />
             </div>
-            <div className="form-group">
-              <label>Password</label>
-              <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} placeholder="Min 6 characters" />
-            </div>
-            <button className="btn" type="submit">Create Account</button>
+            <button className="btn" type="submit">Continue</button>
           </form>
         )}
 
@@ -78,7 +94,21 @@ export default function Signup() {
               <label>Enter code</label>
               <input className="input" value={code} onChange={e => setCode(e.target.value)} required placeholder="6-digit code" />
             </div>
-            <button className="btn" type="submit">Verify & Complete</button>
+            <button className="btn" type="submit">Verify Email</button>
+          </form>
+        )}
+
+        {step === 3 && (
+          <form onSubmit={handleSetPassword}>
+            <div className="form-group">
+              <label>Password</label>
+              <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} placeholder="Min 6 characters" />
+            </div>
+            <div className="form-group">
+              <label>Confirm Password</label>
+              <input className="input" type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required minLength={6} placeholder="Re-enter password" />
+            </div>
+            <button className="btn" type="submit">Create Account</button>
           </form>
         )}
 
