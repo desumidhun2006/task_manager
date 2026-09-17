@@ -24,18 +24,21 @@ export default function Signup() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 400, marginTop: 100 }}>
-      <div className="card">
-        <h2 style={{ marginBottom: 24 }}>Sign Up</h2>
-        {error && <p style={{ color: 'red', marginBottom: 16 }}>{error}</p>}
+    <div className="auth-page">
+      <div className="auth-blob auth-blob-1" />
+      <div className="auth-blob auth-blob-2" />
+      <div className="auth-card">
+        <h2>Create account</h2>
+        <p className="auth-subtitle">Start managing your tasks smarter</p>
+        {error && <div className="auth-error">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Name</label>
-            <input className="input" type="text" value={name} onChange={e => setName(e.target.value)} required />
+            <input className="input" type="text" value={name} onChange={e => setName(e.target.value)} required placeholder="Your name" />
           </div>
           <div className="form-group">
             <label>Email</label>
-            <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+            <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com" />
           </div>
           <div className="form-group">
             <label>Phone</label>
@@ -43,13 +46,11 @@ export default function Signup() {
           </div>
           <div className="form-group">
             <label>Password</label>
-            <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} />
+            <input className="input" type="password" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} placeholder="Min 6 characters" />
           </div>
-          <button className="btn" type="submit" style={{ width: '100%' }}>Sign Up</button>
+          <button className="btn" type="submit">Create Account</button>
         </form>
-        <p style={{ marginTop: 16, textAlign: 'center', fontSize: 14 }}>
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
+        <p>Already have an account? <Link to="/login">Sign in</Link></p>
       </div>
     </div>
   )

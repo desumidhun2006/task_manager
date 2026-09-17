@@ -53,11 +53,21 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 400, marginTop: 100 }}>
-      <div className="card">
-        <h2 style={{ marginBottom: 24 }}>Forgot password</h2>
-        {err && <p style={{ color: 'red', marginBottom: 16 }}>{err}</p>}
-        {msg && <p style={{ color: 'green', marginBottom: 16 }}>{msg}</p>}
+    <div className="auth-page">
+      <div className="auth-blob auth-blob-1" />
+      <div className="auth-blob auth-blob-2" />
+      <div className="auth-card">
+        <h2>Reset password</h2>
+        <p className="auth-subtitle">We'll send a code to verify your identity</p>
+
+        <div className="step-indicator">
+          <div className={`step-dot ${step >= 1 ? (step > 1 ? 'done' : 'active') : ''}`} />
+          <div className={`step-dot ${step >= 2 ? (step > 2 ? 'done' : 'active') : ''}`} />
+          <div className={`step-dot ${step >= 3 ? 'active' : ''}`} />
+        </div>
+
+        {err && <div className="auth-error">{err}</div>}
+        {msg && <div style={{ color: 'var(--success)', fontSize: 13, marginBottom: 16 }}>{msg}</div>}
 
         {step === 1 && (
           <form onSubmit={send}>
@@ -71,12 +81,12 @@ export default function ForgotPassword() {
             <div className="form-group">
               <label>{method === 'email' ? 'Email' : 'Phone'}</label>
               {method === 'email' ? (
-                <input className="input" type="email" value={value} onChange={e => setValue(e.target.value)} required />
+                <input className="input" type="email" value={value} onChange={e => setValue(e.target.value)} required placeholder="you@example.com" />
               ) : (
                 <PhoneInput value={value} onChange={setValue} required />
               )}
             </div>
-            <button className="btn" type="submit" style={{ width: '100%' }}>Send code</button>
+            <button className="btn" type="submit">Send Code</button>
           </form>
         )}
 
@@ -84,9 +94,9 @@ export default function ForgotPassword() {
           <form onSubmit={verify}>
             <div className="form-group">
               <label>Enter code</label>
-              <input className="input" value={code} onChange={e => setCode(e.target.value)} required />
+              <input className="input" value={code} onChange={e => setCode(e.target.value)} required placeholder="6-digit code" />
             </div>
-            <button className="btn" type="submit" style={{ width: '100%' }}>Verify code</button>
+            <button className="btn" type="submit">Verify Code</button>
           </form>
         )}
 
@@ -94,19 +104,17 @@ export default function ForgotPassword() {
           <form onSubmit={reset}>
             <div className="form-group">
               <label>New password</label>
-              <input className="input" type="password" value={pw} onChange={e => setPw(e.target.value)} required minLength={6} />
+              <input className="input" type="password" value={pw} onChange={e => setPw(e.target.value)} required minLength={6} placeholder="Min 6 characters" />
             </div>
             <div className="form-group">
               <label>Confirm password</label>
-              <input className="input" type="password" value={pw2} onChange={e => setPw2(e.target.value)} required minLength={6} />
+              <input className="input" type="password" value={pw2} onChange={e => setPw2(e.target.value)} required minLength={6} placeholder="Repeat password" />
             </div>
-            <button className="btn" type="submit" style={{ width: '100%' }}>Reset password</button>
+            <button className="btn" type="submit">Reset Password</button>
           </form>
         )}
 
-        <p style={{ marginTop: 16, textAlign: 'center', fontSize: 14 }}>
-          <Link to="/login">Back to login</Link>
-        </p>
+        <p><Link to="/login">← Back to login</Link></p>
       </div>
     </div>
   )

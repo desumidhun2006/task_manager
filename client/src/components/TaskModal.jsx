@@ -68,7 +68,7 @@ export default function TaskModal({ task, date, time, onSave, onDelete, onClose 
           <div style={{ display: 'flex', gap: 8, marginTop: 16 }}>
             <button className="btn" type="submit">{task ? 'Update' : 'Create'}</button>
             {task && (
-              <button className="btn" type="button" style={{ background: '#e74c3c' }} onClick={() => onDelete(task.id)}>
+              <button className="btn btn-danger" type="button" onClick={() => onDelete(task.id)}>
                 Delete
               </button>
             )}

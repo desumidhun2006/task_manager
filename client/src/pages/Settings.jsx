@@ -36,41 +36,53 @@ export default function Settings() {
   }
 
   return (
-    <div className="container" style={{ maxWidth: 600 }}>
-      <div className="page-header">
-        <h2>Settings</h2>
-        <Link to="/calendar">Back to Calendar</Link>
-      </div>
-
-      <div className="card">
-        <h3 style={{ marginBottom: 16 }}>Calendar</h3>
-        <div className="form-group">
-          <label>Default View</label>
-          <select className="input" value={defaultView} onChange={e => setDefaultView(e.target.value)}>
-            <option value="monthly">Monthly</option>
-            <option value="weekly">Weekly</option>
-            <option value="daily">Daily</option>
-          </select>
+    <div className="app-layout">
+      <main className="main-content" style={{ maxWidth: 640, margin: '0 auto' }}>
+        <div className="page-header">
+          <h2>Settings</h2>
+          <Link to="/calendar">← Calendar</Link>
         </div>
 
-        <h3 style={{ marginBottom: 16, marginTop: 24 }}>Reminders</h3>
-        <div className="form-group">
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <input type="checkbox" checked={reminderSMS} onChange={e => setReminderSMS(e.target.checked)} />
-            SMS Reminders ({user?.phone || 'no phone set'})
-          </label>
-        </div>
-        <div className="form-group">
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <input type="checkbox" checked={reminderEmail} onChange={e => setReminderEmail(e.target.checked)} />
-            Email Reminders ({user?.email || 'no email set'})
-          </label>
+        <div className="settings-section">
+          <h3>Calendar</h3>
+          <div className="form-group">
+            <label>Default View</label>
+            <select className="input" value={defaultView} onChange={e => setDefaultView(e.target.value)}>
+              <option value="monthly">Monthly</option>
+              <option value="weekly">Weekly</option>
+              <option value="daily">Daily</option>
+            </select>
+          </div>
         </div>
 
-        <button className="btn" onClick={handleSave} style={{ marginTop: 16 }}>
-          {saved ? 'Saved!' : 'Save Settings'}
+        <div className="settings-section">
+          <h3>Reminders</h3>
+          <div className="settings-row">
+            <div>
+              <label>SMS Reminders</label>
+              <div className="label-sub">{user?.phone ? `+91 ${user.phone}` : 'No phone set'}</div>
+            </div>
+            <label className="toggle">
+              <input type="checkbox" checked={reminderSMS} onChange={e => setReminderSMS(e.target.checked)} />
+              <span className="toggle-slider" />
+            </label>
+          </div>
+          <div className="settings-row">
+            <div>
+              <label>Email Reminders</label>
+              <div className="label-sub">{user?.email || 'No email set'}</div>
+            </div>
+            <label className="toggle">
+              <input type="checkbox" checked={reminderEmail} onChange={e => setReminderEmail(e.target.checked)} />
+              <span className="toggle-slider" />
+            </label>
+          </div>
+        </div>
+
+        <button className="btn" onClick={handleSave} style={{ marginTop: 8 }}>
+          {saved ? '✓ Saved!' : 'Save Settings'}
         </button>
-      </div>
+      </main>
     </div>
   )
 }
