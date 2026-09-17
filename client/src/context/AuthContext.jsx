@@ -14,9 +14,13 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (token) {
-      setUser({ token })
+      api.get('/api/auth/me')
+        .then(res => setUser(res.data.user))
+        .catch(() => setUser({ token }))
+        .finally(() => setLoading(false))
+    } else {
+      setLoading(false)
     }
-    setLoading(false)
   }, [token])
 
   const login = async (email, password) => {
