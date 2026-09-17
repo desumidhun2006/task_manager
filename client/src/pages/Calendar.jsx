@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
 import api from '../api'
-import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isToday, addMonths, subMonths, startOfDay, endOfDay, addHours, format as fnsFormat } from 'date-fns'
+import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isToday, addMonths, subMonths, addWeeks, subWeeks, startOfDay, endOfDay, addHours, format as fnsFormat } from 'date-fns'
 import TaskModal from '../components/TaskModal'
 
 export default function Calendar() {
@@ -201,9 +201,17 @@ export default function Calendar() {
       <main className="main-content">
         <div className="page-header">
           <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn btn-secondary" onClick={() => setCurrentDate(subMonths(currentDate, 1))}>Prev</button>
-            <h3>{format(currentDate, 'MMMM yyyy')}</h3>
-            <button className="btn btn-secondary" onClick={() => setCurrentDate(addMonths(currentDate, 1))}>Next</button>
+            <button className="btn btn-secondary" onClick={() => {
+              if (view === 'weekly') setCurrentDate(d => subWeeks(d, 1))
+              else if (view === 'daily') setCurrentDate(d => addDays(d, -1))
+              else setCurrentDate(d => subMonths(d, 1))
+            }}>Prev</button>
+            <h3>{view === 'weekly' ? `${format(startOfWeek(currentDate), 'MMM d')} – ${format(endOfWeek(currentDate), 'MMM d, yyyy')}` : view === 'daily' ? format(currentDate, 'EEEE, MMM d, yyyy') : format(currentDate, 'MMMM yyyy')}</h3>
+            <button className="btn btn-secondary" onClick={() => {
+              if (view === 'weekly') setCurrentDate(d => addWeeks(d, 1))
+              else if (view === 'daily') setCurrentDate(d => addDays(d, 1))
+              else setCurrentDate(d => addMonths(d, 1))
+            }}>Next</button>
           </div>
           <div style={{ display: 'flex', gap: 8 }}>
             {['monthly', 'weekly', 'daily'].map(v => (
