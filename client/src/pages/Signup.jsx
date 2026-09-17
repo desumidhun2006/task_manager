@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Link, useNavigate } from 'react-router-dom'
-import PhoneInput from '../components/PhoneInput'
 
 export default function Signup() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const { signup } = useAuth()
@@ -16,7 +14,7 @@ export default function Signup() {
     e.preventDefault()
     setError('')
     try {
-      await signup(name, email, phone, password)
+      await signup(name, email, password)
       navigate('/calendar')
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed')
@@ -39,10 +37,6 @@ export default function Signup() {
           <div className="form-group">
             <label>Email</label>
             <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com" />
-          </div>
-          <div className="form-group">
-            <label>Phone</label>
-            <PhoneInput value={phone} onChange={setPhone} required />
           </div>
           <div className="form-group">
             <label>Password</label>

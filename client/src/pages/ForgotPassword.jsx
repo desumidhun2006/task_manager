@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import api from '../api'
-import PhoneInput from '../components/PhoneInput'
 
 export default function ForgotPassword() {
   const [step, setStep] = useState(1)
-  const [method, setMethod] = useState('email')
-  const [value, setValue] = useState('')
+  const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [pw, setPw] = useState('')
   const [pw2, setPw2] = useState('')
@@ -19,8 +17,8 @@ export default function ForgotPassword() {
     setErr('')
     setMsg('')
     try {
-      await api.post('/api/auth/forgot-password', { method, value })
-      setMsg('Code sent. Check your email/SMS.')
+      await api.post('/api/auth/forgot-password', { email })
+      setMsg('Code sent. Check your email.')
       setStep(2)
     } catch (e2) {
       setErr(e2.response?.data?.message || 'Send failed')
@@ -31,7 +29,7 @@ export default function ForgotPassword() {
     e.preventDefault()
     setErr('')
     try {
-      await api.post('/api/auth/verify-code', { method, value, code })
+      await api.post('/api/auth/verify-code', { email, code })
       setMsg('Code verified. Set new password.')
       setStep(3)
     } catch (e2) {
@@ -44,7 +42,7 @@ export default function ForgotPassword() {
     setErr('')
     if (pw !== pw2) return setErr('Passwords do not match')
     try {
-      await api.post('/api/auth/reset-password', { method, value, code, newPassword: pw })
+      await api.post('/api/auth/reset-password', { email, code, newPassword: pw })
       setMsg('Password reset. Redirecting to login...')
       setTimeout(() => navigate('/login'), 1500)
     } catch (e2) {
@@ -58,7 +56,7 @@ export default function ForgotPassword() {
       <div className="auth-blob auth-blob-2" />
       <div className="auth-card">
         <h2>Reset password</h2>
-        <p className="auth-subtitle">We'll send a code to verify your identity</p>
+        <p className="auth-subtitle">We'll send a code to your email</p>
 
         <div className="step-indicator">
           <div className={`step-dot ${step >= 1 ? (step > 1 ? 'done' : 'active') : ''}`} />
@@ -72,19 +70,8 @@ export default function ForgotPassword() {
         {step === 1 && (
           <form onSubmit={send}>
             <div className="form-group">
-              <label>Send code via</label>
-              <select className="input" value={method} onChange={e => { setMethod(e.target.value); setValue('') }}>
-                <option value="email">Email</option>
-                <option value="phone">Phone</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label>{method === 'email' ? 'Email' : 'Phone'}</label>
-              {method === 'email' ? (
-                <input className="input" type="email" value={value} onChange={e => setValue(e.target.value)} required placeholder="you@example.com" />
-              ) : (
-                <PhoneInput value={value} onChange={setValue} required />
-              )}
+              <label>Email</label>
+              <input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="you@example.com" />
             </div>
             <button className="btn" type="submit">Send Code</button>
           </form>

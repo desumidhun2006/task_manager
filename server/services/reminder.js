@@ -1,6 +1,5 @@
 const cron = require('node-cron')
 const db = require('../db')
-const { sendSMS } = require('./sms')
 const { sendEmail } = require('./email')
 
 const reminderOffsets = {
@@ -16,7 +15,6 @@ async function checkReminders() {
 
   const tasks = await db('tasks')
     .join('users', 'tasks.user_id', 'users.id')
-    .join('settings', 'users.id', 'settings.user_id')
     .whereNot('tasks.reminder', 'none')
     .where('tasks.start_time', '>', now)
 
@@ -26,13 +24,7 @@ async function checkReminders() {
 
     if (now >= reminderTime && now < new Date(reminderTime.getTime() + 60000)) {
       const message = `Reminder: ${task.title} at ${new Date(task.start_time).toLocaleString()}`
-
-      if (task.reminder_sms) {
-        sendSMS(task.phone, message)
-      }
-      if (task.reminder_email) {
-        sendEmail(task.email, 'Task Reminder', message)
-      }
+      sendEmail(task.email, 'Task Reminder', message)
     }
   }
 }

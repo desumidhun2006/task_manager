@@ -6,7 +6,6 @@ import api from '../api'
 export default function Settings() {
   const { user } = useAuth()
   const [defaultView, setDefaultView] = useState('monthly')
-  const [reminderSMS, setReminderSMS] = useState(true)
   const [reminderEmail, setReminderEmail] = useState(true)
   const [saved, setSaved] = useState(false)
 
@@ -18,7 +17,6 @@ export default function Settings() {
     try {
       const res = await api.get('/api/settings')
       setDefaultView(res.data.defaultView || 'monthly')
-      setReminderSMS(res.data.reminderSMS ?? true)
       setReminderEmail(res.data.reminderEmail ?? true)
     } catch (err) {
       // use defaults
@@ -27,7 +25,7 @@ export default function Settings() {
 
   const handleSave = async () => {
     try {
-      await api.put('/api/settings', { defaultView, reminderSMS, reminderEmail })
+      await api.put('/api/settings', { defaultView, reminderEmail })
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } catch (err) {
@@ -57,16 +55,6 @@ export default function Settings() {
 
         <div className="settings-section">
           <h3>Reminders</h3>
-          <div className="settings-row">
-            <div>
-              <label>SMS Reminders</label>
-              <div className="label-sub">{user?.phone ? `+91 ${user.phone}` : 'No phone set'}</div>
-            </div>
-            <label className="toggle">
-              <input type="checkbox" checked={reminderSMS} onChange={e => setReminderSMS(e.target.checked)} />
-              <span className="toggle-slider" />
-            </label>
-          </div>
           <div className="settings-row">
             <div>
               <label>Email Reminders</label>

@@ -22,5 +22,5 @@
 - **2026-09-16** — Task 13: Forgot password 3-step flow: send code → verify code → reset password. Removed dev code display. Added confirm password.
 - **2026-09-16** — Task 14: India (+91) phone input. Strip +91 if entered, store 10-digit only. PhoneInput component with +91 prefix. Updated Signup + ForgotPassword.
 - **2026-09-16** — Task 15: Swapped Twilio for Fast2SMS (free for India). Updated SMS service, .env, .env.example.
-- **2026-09-16** — Task 16: Swapped Fast2SMS for textbee (50 SMS/day free forever). Updated SMS service, .env, .env.example.
+- **2026-09-16** — Task 16: Removed all SMS/phone functionality. Email-only for auth and reminders. Dropped phone column from users, reminder_sms from settings. Deleted sms.js, PhoneInput.jsx.
 - **2026-09-17** — Task 17: Full UI redesign. Dark glassmorphism theme (#0d0f14 bg, #7c6aff accent). Inter font. Animated blob auth pages (Login, Signup, ForgotPassword). Glassmorphism sidebar, gradient task chips, dark calendar grid, slide-up modal, step-dot indicator for forgot-password flow, toggle switch settings, btn-danger for delete. Full index.css rewrite + index.html updated with font + SEO meta.

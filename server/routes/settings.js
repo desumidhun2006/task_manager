@@ -22,16 +22,16 @@ router.get('/', async (req, res) => {
 
 router.put('/', async (req, res) => {
   try {
-    const { defaultView, reminderSMS, reminderEmail } = req.body
+    const { defaultView, reminderEmail } = req.body
     let settings = await db('settings').where('user_id', req.user.id).first()
     if (!settings) {
       [settings] = await db('settings')
-        .insert({ user_id: req.user.id, default_view: defaultView, reminder_sms: reminderSMS, reminder_email: reminderEmail })
+        .insert({ user_id: req.user.id, default_view: defaultView, reminder_email: reminderEmail })
         .returning('*')
     } else {
       [settings] = await db('settings')
         .where('user_id', req.user.id)
-        .update({ default_view: defaultView, reminder_sms: reminderSMS, reminder_email: reminderEmail, updated_at: new Date() })
+        .update({ default_view: defaultView, reminder_email: reminderEmail, updated_at: new Date() })
         .returning('*')
     }
     res.json(settings)
