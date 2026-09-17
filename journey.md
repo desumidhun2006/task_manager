@@ -25,3 +25,4 @@
 - **2026-09-16** — Task 16: Removed all SMS/phone functionality. Email-only for auth and reminders. Dropped phone column from users, reminder_sms from settings. Deleted sms.js, PhoneInput.jsx.
 - **2026-09-17** — Task 17: Full UI redesign. Dark glassmorphism theme (#0d0f14 bg, #7c6aff accent). Inter font. Animated blob auth pages (Login, Signup, ForgotPassword). Glassmorphism sidebar, gradient task chips, dark calendar grid, slide-up modal, step-dot indicator for forgot-password flow, toggle switch settings, btn-danger for delete. Full index.css rewrite + index.html updated with font + SEO meta.
 - **2026-09-17** — Task 18: LAN access. Server listens on 0.0.0.0, CORS origin true. Vite host 0.0.0.0. People on same WiFi can access app.
+- **2026-09-17** — Task 19: Delete account with email verification. request-delete + confirm-delete endpoints. Danger zone section in Settings. 3-step flow: click delete → send code → enter code → account deleted.

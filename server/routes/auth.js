@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const db = require('../db')
 const { sendEmail } = require('../services/email')
+const auth = require('../middleware/auth')
 
 const router = express.Router()
 
@@ -109,6 +110,51 @@ router.post('/reset-password', async (req, res) => {
     res.json({ message: 'Password reset. Login now.' })
   } catch (err) {
     res.status(500).json({ message: 'Reset failed', error: err.message })
+  }
+})
+
+router.post('/request-delete', auth, async (req, res) => {
+  try {
+    const user = await db('users').where({ id: req.user.id }).first()
+    if (!user) return res.status(404).json({ message: 'User not found' })
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString()
+    const expires_at = new Date(Date.now() + 10 * 60 * 1000)
+    await db('password_resets').where({ user_id: user.id }).del()
+    await db('password_resets').insert({ user_id: user.id, code, expires_at })
+
+    await sendEmail(user.email, 'Delete account verification code', `Your delete account code: ${code}. Valid 10 min.`)
+
+    const dev = !process.env.RESEND_API_KEY
+    res.json({ message: 'Code sent', ...(dev ? { debugCode: code } : {}) })
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to send code', error: err.message })
+  }
+})
+
+router.post('/confirm-delete', auth, async (req, res) => {
+  try {
+    const { code } = req.body
+    if (!code) return res.status(400).json({ message: 'Code required' })
+
+    const user = await db('users').where({ id: req.user.id }).first()
+    if (!user) return res.status(404).json({ message: 'User not found' })
+
+    const row = await db('password_resets').where({ user_id: user.id, code }).first()
+    if (!row) return res.status(400).json({ message: 'Invalid code' })
+    if (new Date(row.expires_at) < new Date()) {
+      await db('password_resets').where({ id: row.id }).del()
+      return res.status(400).json({ message: 'Code expired' })
+    }
+
+    await db('password_resets').where({ user_id: user.id }).del()
+    await db('tasks').where({ user_id: user.id }).del()
+    await db('settings').where({ user_id: user.id }).del()
+    await db('users').where({ id: user.id }).del()
+
+    res.json({ message: 'Account deleted' })
+  } catch (err) {
+    res.status(500).json({ message: 'Delete failed', error: err.message })
   }
 })
 
