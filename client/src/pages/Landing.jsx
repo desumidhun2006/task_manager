@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react'
 const features = [
   { icon: '📅', title: 'Smart Calendar', desc: 'Monthly, weekly & daily views with drag-and-drop task management.' },
   { icon: '🔔', title: 'Reminders', desc: 'Email reminders before events so you never miss a deadline.' },
-  { icon: '⚡', title: 'Quick Add', desc: 'Create tasks in seconds with our instant sidebar composer.' },
-  { icon: '🎨', title: 'Dark Mode', desc: "Beautiful glassmorphism UI that's easy on your eyes." },
   { icon: '🔒', title: 'Secure', desc: 'JWT auth, encrypted passwords, and privacy-first design.' },
   { icon: '📱', title: 'Responsive', desc: 'Works seamlessly on desktop, tablet, and mobile devices.' },
 ]
