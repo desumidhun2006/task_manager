@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 const features = [
   { icon: '📅', title: 'Smart Calendar', desc: 'Monthly, weekly & daily views with drag-and-drop task management.' },
@@ -16,6 +17,7 @@ const stats = [
 ]
 
 export default function Landing() {
+  const { user } = useAuth()
   const [scrolled, setScrolled] = useState(false)
   const [activeFeature, setActiveFeature] = useState(0)
 
@@ -29,6 +31,8 @@ export default function Landing() {
     const t = setInterval(() => setActiveFeature(i => (i + 1) % features.length), 3000)
     return () => clearInterval(t)
   }, [])
+
+  if (user) return <Navigate to="/calendar" />
 
   return (
     <div className="landing">
