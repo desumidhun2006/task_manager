@@ -14,7 +14,7 @@ const app = express()
 const PORT = process.env.PORT || 5001
 
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: true,
   credentials: true
 }))
 app.use(express.json())
@@ -28,7 +28,7 @@ app.get('/api/health', (req, res) => {
 })
 
 db.migrate.latest().then(() => {
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`)
   })
 }).catch(err => {
